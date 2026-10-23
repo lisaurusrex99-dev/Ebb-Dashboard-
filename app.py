@@ -1,11 +1,42 @@
-import base64
-from datetime import date
 from pathlib import Path
+from datetime import date
+import base64
 import streamlit as st
 
+st.set_page_config(
+    page_title='Ebb — Find your own flow',
+    page_icon='🌊',
+    layout='wide',
+    initial_sidebar_state='expanded'
+)
+
+logo = Path(__file__).resolve().parent / "ebb-logo.svg"
+logo_data = base64.b64encode(logo.read_bytes()).decode("ascii")
+
+# Ebb background
+background = Path(__file__).resolve().parent / "ebb-background.png"
+if background.exists():
+    background_data = base64.b64encode(background.read_bytes()).decode("ascii")
+
+    st.markdown(
+        f"""
+        <style>
+        [data-testid="stAppViewContainer"] {{
+            background-image: url("data:image/png;base64,{background_data}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }}
+        [data-testid="stHeader"] {{
+            background: transparent;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
 st.set_page_config(page_title='Ebb — Find your own flow', page_icon='🌊', layout='wide', initial_sidebar_state='expanded')
-logo = Path(__file__).resolve().parent / 'assets' / 'ebb-logo.svg'
-logo_data = base64.b64encode(logo.read_bytes()).decode('ascii')
 
 st.markdown('''<style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
@@ -34,6 +65,19 @@ h1 {font-size:2.3rem!important}
 .soft-card {background:#F8EAF3;border-radius:20px;padding:18px 22px;color:#354A40}
 .section {font-size:1.12rem;font-weight:500;color:#354A40;margin:8px 0 10px}
 .muted {color:#80938C;font-size:.85rem}
+
+/* Today's focus text area */
+.stTextArea textarea {
+    color: #F5F5F5 !important;
+    -webkit-text-fill-color: #F5F5F5 !important;
+    caret-color: #FFFFFF !important;
+}
+
+.stTextArea textarea::placeholder {
+    color: #BFC8C3 !important;
+    -webkit-text-fill-color: #BFC8C3 !important;
+}
+
 </style>''', unsafe_allow_html=True)
 
 if 'tasks' not in st.session_state:
@@ -77,7 +121,18 @@ def break_checklist():
 
 with st.sidebar:
     st.markdown(f'<div class="brand"><img src="data:image/svg+xml;base64,{logo_data}" width="70"><div><div class="brand-name">Ebb</div><div class="brand-tag">Find your own flow.</div></div></div>',unsafe_allow_html=True)
-    page = st.radio('Navigation',['My Day','To Do','Break Reminder'],label_visibility='collapsed')
+
+    page = st.radio(
+        'Navigation',
+        [
+            'My Day',
+            'My Tasks',
+            'My Schedule',
+            'My Energy',
+            'My Breaks'
+        ],
+        label_visibility='collapsed'
+    )
     st.divider()
     st.markdown('<div class="soft-card">🌸 Your pace is personal.<br>Make room for what matters.</div>',unsafe_allow_html=True)
 
@@ -112,12 +167,48 @@ if page == 'My Day':
             break_checklist()
     st.markdown('<div class="soft-card" style="text-align:center;margin-top:12px">“A balanced day is still a productive day.”</div>',unsafe_allow_html=True)
 
-elif page == 'To Do':
-    st.markdown('<div class="hero"><span class="eyebrow">MAKE SPACE FOR WHAT MATTERS</span><h1>To do:</h1><p>A simple place for your tasks. Add what matters and tick things off at your own pace.</p></div>',unsafe_allow_html=True)
-    with st.container(border=True): task_list()
+elif page == 'My Tasks':
+    st.markdown(
+        '<div class="hero"><span class="eyebrow">MAKE SPACE FOR WHAT MATTERS</span>'
+        '<h1>My Tasks</h1>'
+        '<p>A simple place for your tasks. Add what matters and tick things off at your own pace.</p></div>',
+        unsafe_allow_html=True
+    )
+    with st.container(border=True):
+        task_list()
     st.caption('Your tasks stay available while this app session is active.')
 
-else:
-    st.markdown('<div class="hero"><span class="eyebrow">A MOMENT FOR YOURSELF</span><h1>Break reminder</h1><p>Rest is part of your day, not something you need to earn.</p></div>',unsafe_allow_html=True)
-    with st.container(border=True): break_checklist()
+    
+elif page == 'My Schedule':
+    st.markdown(
+        '<div class="hero"><span class="eyebrow">PLAN YOUR TIME</span>'
+        '<h1>My Schedule</h1>'
+        '<p>A calm space for meetings, appointments and plans.</p></div>',
+        unsafe_allow_html=True
+    )
+    with st.container(border=True):
+        st.subheader('📅 Your schedule')
+        st.write('Your meetings and appointments will appear here soon.')
+
+elif page == 'My Energy':
+    st.markdown(
+        '<div class="hero"><span class="eyebrow">LISTEN TO YOURSELF</span>'
+        '<h1>My Energy</h1>'
+        '<p>Understand your energy and find a pace that works for you.</p></div>',
+        unsafe_allow_html=True
+    )
+    with st.container(border=True):
+        st.subheader('💗 How are you feeling?')
+        st.slider('Energy level', 1, 5, key='energy_page')
+        st.caption('Your energy matters just as much as your productivity.')
+
+elif page == 'My Breaks':
+    st.markdown(
+        '<div class="hero"><span class="eyebrow">A MOMENT FOR YOURSELF</span>'
+        '<h1>My Breaks</h1>'
+        '<p>Rest is part of your day, not something you need to earn.</p></div>',
+        unsafe_allow_html=True
+    )
+    with st.container(border=True):
+        break_checklist()
     st.info('These are optional suggestions, not scheduled device notifications.')

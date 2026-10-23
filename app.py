@@ -36,8 +36,6 @@ if background.exists():
         unsafe_allow_html=True
     )
 
-st.set_page_config(page_title='Ebb — Find your own flow', page_icon='🌊', layout='wide', initial_sidebar_state='expanded')
-
 st.markdown('''<style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 html,body,[class*="css"],button,input,textarea {font-family:'Poppins',sans-serif!important}

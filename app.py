@@ -63,7 +63,27 @@ h1 {font-size:2.3rem!important}
 .soft-card {background:#F8EAF3;border-radius:20px;padding:18px 22px;color:#354A40}
 .section {font-size:1.12rem;font-weight:500;color:#354A40;margin:8px 0 10px}
 .muted {color:#80938C;font-size:.85rem}
+/* Redesign: improved navigation contrast */
+[data-testid="stSidebarCollapseButton"] button,
+[data-testid="stSidebarCollapsedControl"] button {
+    color: #354A40 !important;
+    background-color: #D7EEE9 !important;
+    border-radius: 10px !important;
+}
 
+[data-testid="stSidebarCollapseButton"] svg,
+[data-testid="stSidebarCollapsedControl"] svg {
+    color: #354A40 !important;
+    stroke: #354A40 !important;
+}
+
+@media (max-width: 768px) {
+    .block-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        padding-top: 1rem;
+    }
+}
 /* Today's focus text area */
 .stTextArea textarea {
     color: #F5F5F5 !important;
